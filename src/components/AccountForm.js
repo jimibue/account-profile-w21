@@ -1,73 +1,42 @@
-import React, { useContext } from "react";
+import React, { useState, useContext } from "react";
 import { Form } from "semantic-ui-react";
 import { AccountConsumer, AccountContext } from "../providers/AccountProvider";
 
-class AccountForm extends React.Component {
-  state = {
-    username: this.props.username,
-    membershipLevel: this.props.membershipLevel,
-  };
-
-  handleChange = (e, { name, value }) => this.setState({ [name]: value });
-
-  handleSubmit = (e) => {
-    e.preventDefault();
-  };
-
-  render() {
-    const { username, membershipLevel } = this.state;
-    return (
-      <>
-        <h1>Header: {this.props.header}</h1>
-        <Form onSubmit={this.handleSubmit}>
-          <Form.Input
-            label="Edit Username"
-            type="text"
-            name="username"
-            value={username}
-            onChange={this.handleChange}
-          />
-          <Form.Select
-            label="Membership Level"
-            name="membershipLevel"
-            value={membershipLevel}
-            onChange={this.handleChange}
-            options={membershipOptions}
-          />
-          <Form.Button color="blue">Save</Form.Button>
-        </Form>
-      </>
-    );
-  }
-}
-
-// higher order component HOC wrapping a component within another componet
-// to provided data/function
-
-// const ConnectedAccountForm = (props) => {
-//   return (
-//     <AccountConsumer>
-//       {(value) => (
-//         <AccountForm
-//           username={value.username}
-//           membershipLevel={value.membershipLevel}
-//         />
-//       )}
-//     </AccountConsumer>
-//   );
-// };
-
-const ConnectedAccountForm = (props) => {
+const AccountForm = (props) => {
   const account = useContext(AccountContext);
+  const [username, setUsername] = useState(account.username);
+  const [membershipLevel, setMembershipLevel] = useState(
+    account.membershipLevel
+  );
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    account.updateAccount({ username, membershipLevel });
+    account.rand();
+  };
+
   return (
-    <AccountForm
-      {...props}
-      username={account.username}
-      membershipLevel={account.membershipLevel}
-    />
+    <>
+      <h1>Header: {props.header}</h1>
+      <Form onSubmit={handleSubmit}>
+        <Form.Input
+          label="Edit Username"
+          type="text"
+          name="username"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+        />
+        <Form.Select
+          label="Membership Level"
+          name="membershipLevel"
+          value={membershipLevel}
+          onChange={(e, { value }) => setMembershipLevel(value)}
+          options={membershipOptions}
+        />
+        <Form.Button color="blue">Save</Form.Button>
+      </Form>
+    </>
   );
 };
-
 const membershipOptions = [
   { key: "b", text: "Bronze", value: "Bronze" },
   { key: "s", text: "Silver", value: "Silver" },
@@ -75,4 +44,4 @@ const membershipOptions = [
   { key: "p", text: "Platinum", value: "Platinum" },
 ];
 
-export default ConnectedAccountForm;
+export default AccountForm;

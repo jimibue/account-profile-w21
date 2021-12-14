@@ -11,6 +11,20 @@ class AccountProvider extends React.Component {
     username: "fooman77",
     membershipLevel: "Gold",
     dateJoined: "12/21/21",
+    updateAccount: (account) => this.updateAccount(account),
+    rand: () => this.rand(),
+  };
+
+  rand = () => {
+    console.log("rand called");
+  };
+
+  updateAccount = (account) => {
+    console.log("updateAccount called");
+    this.setState({
+      username: account.username,
+      membershipLevel: account.membershipLevel,
+    });
   };
 
   render() {
